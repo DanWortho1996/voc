@@ -127,16 +127,33 @@ const App = () => {
     await setDoc(doc(db, "leaderboard", playerName), { name: playerName, score });
     socket.emit("updateScore", { name: playerName, score });
   
-    setGameStarted(false);
-    setShowPopup(true);
-    
     if (isMultiplayer) {
       console.log("📢 Emitting playerLost:", { name: playerName, room });
       socket.emit("playerLost", { name: playerName, room });
+  
+      // Wait for server confirmation that the player has been eliminated
+      socket.on("playerEliminated", ({ eliminatedPlayer }) => {
+        if (eliminatedPlayer === playerName) {
+          console.log("✅ Server confirmed elimination:", eliminatedPlayer);
+          setGameStarted(false);
+          setShowPopup(true);
+        }
+      });
+  
+      // If the game is completely over, listen for `gameOver` event
+      socket.on("gameOver", () => {
+        console.log("🛑 Server confirmed game over");
+        setGameStarted(false);
+        setShowPopup(true);
+      });
+    } else {
+      setGameStarted(false);
+      setShowPopup(true);
     }
   
     fetchLeaderboard();
   };
+  
   
 
   const incrementScore = () => {
