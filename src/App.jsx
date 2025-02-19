@@ -120,18 +120,24 @@ const App = () => {
       }
     }, 100);
   };
-  
 
   const handleGameOver = async () => {
+    console.log("❌ Game Over for:", playerName);
+  
     await setDoc(doc(db, "leaderboard", playerName), { name: playerName, score });
     socket.emit("updateScore", { name: playerName, score });
+  
     setGameStarted(false);
     setShowPopup(true);
-    fetchLeaderboard();
+    
     if (isMultiplayer) {
+      console.log("📢 Emitting playerLost:", { name: playerName, room });
       socket.emit("playerLost", { name: playerName, room });
     }
+  
+    fetchLeaderboard();
   };
+  
 
   const incrementScore = () => {
     setScore((prevScore) => prevScore + 3);
