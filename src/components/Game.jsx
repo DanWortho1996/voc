@@ -23,8 +23,7 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
     if (timeLeft === 0) {
       setRevealAnswers(true);
       setTimeout(() => {
-        onGameOver();
-        fetchQuestion();
+        onGameOver();  // End game when time runs out
       }, 3000);
     }
     const timer = setInterval(() => {
@@ -55,16 +54,16 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
   const handleAnswerClick = (answer) => {
     setSelectedAnswer(answer);
     setRevealAnswers(true);
+    
     if (answer === correctAnswer) {
       onCorrectAnswer();
       setTimeout(() => fetchQuestion(), 3000);
     } else {
       setTimeout(() => {
-        onGameOver();
-        fetchQuestion();
+        onGameOver();  // Call game over when answer is wrong
       }, 3000);
     }
-  };
+  };  
 
   return (
     <div className="game-container">
