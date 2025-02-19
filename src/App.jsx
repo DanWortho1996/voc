@@ -96,25 +96,31 @@ const App = () => {
 
   const startGame = (name, multiplayer, roomNumber) => {
     console.log("startGame called with:", { name, multiplayer, roomNumber });
-
+  
     setPlayerName(name);
     setIsMultiplayer(multiplayer);
     setRoom(multiplayer ? roomNumber : "");
     setScore(0);
     setShowPopup(false);
-
+  
     setTimeout(() => {
       if (multiplayer) {
         console.log("Emitting joinGame event:", { name, room: roomNumber });
         socket.emit("joinGame", { name, room: roomNumber });
+  
         socket.on("joinSuccess", (data) => {
           console.log("Server confirmed join:", data);
+        });
+  
+        socket.on("error", (err) => {
+          console.error("Error joining room:", err);
         });
       } else {
         setGameStarted(true);
       }
     }, 100);
   };
+  
 
   const handleGameOver = async () => {
     await setDoc(doc(db, "leaderboard", playerName), { name: playerName, score });
