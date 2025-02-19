@@ -1,0 +1,95 @@
+/* Leaderboard container - fixed to right side */
+.leaderboard-wrapper {
+  position: fixed;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+  width: 300px;
+  max-height: 55vh;
+  overflow-y: auto;
+  background: whitesmoke;
+  border: 3px solid #333;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  animation: backgroundAnimation 5s infinite linear;
+}
+
+/* Background animation */
+@keyframes backgroundAnimation {
+  20% { background-color: #ff9a9e; }
+  20% { background-color: #fad0c4; }
+  20% { background-color: #fad0c4; }
+  20% { background-color: #ffdde1; }
+  20% { background-color: #ff9a9e; }
+  20% { background-color: skyblue; }
+  20% { background-color: royalblue; }
+  20% { background-color: blueviolet;}
+}
+
+/* Leaderboard title */
+.leaderboard-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Leaderboard list */
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Player row with animated border */
+.leaderboard-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated line between players */
+.leaderboard-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, #ff512f, #dd2476, rgb(6, 6, 180), rgb(102, 5, 102));
+  animation: lineGlow 1.5s infinite alternate;
+}
+
+@keyframes lineGlow {
+  0% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* Score styling */
+.score {
+  font-weight: bold;
+}
+
+/* High, mid, and low score colors */
+.high-score {
+  color: green;
+}
+
+.mid-score {
+  color: orange;
+}
+
+.low-score {
+  color: red;
+}
+
+/* Final score color when player is eliminated */
+.final-score {
+  color: green;
+  font-weight: bold;
+}

@@ -1,0 +1,32 @@
+/* Make layout responsive */
+@media (max-width: 768px) {
+    .main-layout {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center;
+    }
+      
+    .leaderboard-wrapper {
+        position: relative; /* Remove fixed positioning */
+        width: 90%; /* Adjust width */
+        margin-top: 20px; /* Add spacing */
+    }
+      
+    .game-container {
+        width: 100%;
+    }
+}
+      
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px;
+    }
+      
+    .leaderboard-wrapper, .game-container {
+        width: 100%; /* Full width */
+    }
+      
+    .popup-content {
+        width: 90%;
+    }
+}
+      
