@@ -260,17 +260,15 @@ const App = () => {
   const handleGameOver = async () => {
     await setDoc(doc(db, "leaderboard", playerName), { name: playerName, score });
     socket.emit("updateScore", { name: playerName, score });
+    
+    if (isMultiplayer) {
+      socket.emit("playerLost", { name: playerName, room }); // Notify server of elimination
+    }
+  
     setGameStarted(false);
     setShowPopup(true);
     fetchLeaderboard();
-
-    if (isMultiplayer) {
-      socket.emit("playerLost", { name: playerName, room });
-      socket.on("gameOver", () => {
-        setShowPopup(true);
-      });
-    }
-  };
+  };  
 
   const incrementScore = () => {
     setScore((prevScore) => prevScore + 3);
