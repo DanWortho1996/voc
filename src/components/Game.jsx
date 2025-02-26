@@ -7,33 +7,33 @@ const decodeHtmlEntities = (str) => {
   return txt.value;
 };
 
-const Game = ({ onGameOver, onCorrectAnswer }) => {
+const Game = ({ onGameOver, onCorrectAnswer, score }) => {
   const [question, setQuestion] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [timeLeft, setTimeLeft] = useState(20);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [revealAnswers, setRevealAnswers] = useState(false);
+  const [timerActive, setTimerActive] = useState(true);
 
   useEffect(() => {
     fetchQuestion();
   }, []);
 
   useEffect(() => {
+    if (!timerActive) return;
     if (timeLeft === 0) {
       setRevealAnswers(true);
+      setTimerActive(false);
       setTimeout(() => {
         onGameOver();
       }, 3000);
-      return;
     }
-
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
-
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, timerActive, onGameOver]);
 
   const fetchQuestion = async () => {
     try {
@@ -48,6 +48,7 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
         setTimeLeft(20);
         setSelectedAnswer(null);
         setRevealAnswers(false);
+        setTimerActive(true);
       }
     } catch (error) {
       console.error("Error fetching question:", error);
@@ -57,12 +58,11 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
   const handleAnswerClick = (answer) => {
     setSelectedAnswer(answer);
     setRevealAnswers(true);
-
+    setTimerActive(false);
+    
     if (answer === correctAnswer) {
       onCorrectAnswer();
-      setTimeout(() => {
-        fetchQuestion();
-      }, 3000);
+      setTimeout(() => fetchQuestion(), 3000);
     } else {
       setTimeout(() => {
         onGameOver();
@@ -81,7 +81,9 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
                 key={index}
                 className={`answer-button ${
                   revealAnswers && answer === correctAnswer ? "correct" : ""
-                } ${revealAnswers && answer !== correctAnswer ? "incorrect" : ""}`}
+                } ${
+                  revealAnswers && answer !== correctAnswer ? "incorrect" : ""
+                }`}
                 onClick={() => handleAnswerClick(answer)}
                 disabled={revealAnswers}
               >
