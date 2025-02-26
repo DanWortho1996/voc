@@ -23,14 +23,17 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
     if (timeLeft === 0) {
       setRevealAnswers(true);
       setTimeout(() => {
-        onGameOver();  // End game when time runs out
+        onGameOver();
       }, 3000);
+      return;
     }
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [timeLeft, onGameOver]);
+  }, [timeLeft]);
 
   const fetchQuestion = async () => {
     try {
@@ -54,16 +57,18 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
   const handleAnswerClick = (answer) => {
     setSelectedAnswer(answer);
     setRevealAnswers(true);
-    
+
     if (answer === correctAnswer) {
       onCorrectAnswer();
-      setTimeout(() => fetchQuestion(), 3000);
+      setTimeout(() => {
+        fetchQuestion();
+      }, 3000);
     } else {
       setTimeout(() => {
-        onGameOver();  // Call game over when answer is wrong
+        onGameOver();
       }, 3000);
     }
-  };  
+  };
 
   return (
     <div className="game-container">
@@ -76,9 +81,7 @@ const Game = ({ onGameOver, onCorrectAnswer }) => {
                 key={index}
                 className={`answer-button ${
                   revealAnswers && answer === correctAnswer ? "correct" : ""
-                } ${
-                  revealAnswers && answer !== correctAnswer ? "incorrect" : ""
-                }`}
+                } ${revealAnswers && answer !== correctAnswer ? "incorrect" : ""}`}
                 onClick={() => handleAnswerClick(answer)}
                 disabled={revealAnswers}
               >
